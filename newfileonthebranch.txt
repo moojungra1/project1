@@ -1,0 +1,62 @@
+package com.nhn.android.riworldcong.utility;
+
+import sdk.ui.tab.NavigationBaseActivity;
+import android.app.Activity;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+
+import com.nhn.android.riworldcong.R;
+import com.nhn.android.riworldcong.activity.NavigationActivity;
+import com.nhn.android.riworldcong.activity.NavigationChildActivity;
+
+public class AnimationUtil {
+	public static interface OnAnimationResultListener {
+		public void onAnimationEnd();
+	}
+
+	public static void showTabBar(NavigationActivity aActivity, OnAnimationResultListener aListener) {
+		View tabView = aActivity.getTabBarLayout();
+		tabView.setVisibility(View.VISIBLE);
+		Animation animation = AnimationUtils.loadAnimation(aActivity, R.anim.tabbar_up);
+		animation.setDuration(700);
+		tabView.startAnimation(animation);
+	}
+
+	public static void hideTabBar(NavigationActivity aActivity, final OnAnimationResultListener aListener) {
+		final View tabView = aActivity.getTabBarLayout();
+		Animation animation = AnimationUtils.loadAnimation(aActivity, R.anim.tabbar_down);
+		animation.setDuration(700);
+		animation.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				tabView.setVisibility(View.INVISIBLE);
+				if (aListener != null) {
+					aListener.onAnimationEnd();
+				}
+			}
+		});
+		tabView.startAnimation(animation);
+	}
+
+	public static void runMenuActivityEnter(Activity aActivity) {
+		aActivity.overridePendingTransition(R.anim.screen_up, 0);
+	}
+
+	public static void runMenuActivityExit(Activity aActivity) {
+		aActivity.overridePendingTransition(0, R.anim.screen_down);
+	}
+	
+	public static void runToggleAnimation(NavigationChildActivity aActivity) {
+		((NavigationBaseActivity)aActivity.getParent()).setAnimation(R.anim.fade_in);
+	}
+}
